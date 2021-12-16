@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>如何正确设置CRON定时任务 | WhosPHP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="转载自火丁笔记，原文链接http:&#x2F;&#x2F;huoding.com&#x2F;2016&#x2F;12&#x2F;12&#x2F;573 相信很多人看了标题后都会纳闷：设置 CRON 定时任务有什么难的？不过请相信我，正确设置 CRON 真的不是一件简单的事情！各位看官不妨听我慢慢道来。 关于 CRON，出镜率最高的一个问题莫过于：为什么手动执行一切正常，放到 CRON 里就不执行呢？实际上此类问题多半是因为环境变量导致的，答案就在配置文件里">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何正确设置CRON定时任务">
+<meta property="og:url" content="https://whosphp.github.io/2017/03/22/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E8%AE%BE%E7%BD%AECRON%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/index.html">
+<meta property="og:site_name" content="WhosPHP">
+<meta property="og:description" content="转载自火丁笔记，原文链接http:&#x2F;&#x2F;huoding.com&#x2F;2016&#x2F;12&#x2F;12&#x2F;573 相信很多人看了标题后都会纳闷：设置 CRON 定时任务有什么难的？不过请相信我，正确设置 CRON 真的不是一件简单的事情！各位看官不妨听我慢慢道来。 关于 CRON，出镜率最高的一个问题莫过于：为什么手动执行一切正常，放到 CRON 里就不执行呢？实际上此类问题多半是因为环境变量导致的，答案就在配置文件里">
+<meta property="og:locale">
+<meta property="article:published_time" content="2017-03-22T02:49:30.000Z">
+<meta property="article:modified_time" content="2021-12-16T06:34:39.531Z">
+<meta property="article:author" content="Who">
+<meta property="article:tag" content="php,server">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="WhosPHP" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">WhosPHP</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://whosphp.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-如何正确设置CRON定时任务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/22/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E8%AE%BE%E7%BD%AECRON%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/" class="article-date">
+  <time datetime="2017-03-22T02:49:30.000Z" itemprop="datePublished">2017-03-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      如何正确设置CRON定时任务
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>转载自<a target="_blank" rel="noopener" href="http://huoding.com/">火丁笔记</a>，原文链接<a target="_blank" rel="noopener" href="http://huoding.com/2016/12/12/573">http://huoding.com/2016/12/12/573</a></p>
+<p>相信很多人看了标题后都会纳闷：设置 CRON 定时任务有什么难的？不过请相信我，正确设置 CRON 真的不是一件简单的事情！各位看官不妨听我慢慢道来。</p>
+<p>关于 CRON，出镜率最高的一个问题莫过于：为什么手动执行一切正常，放到 CRON 里就不执行呢？实际上此类问题多半是因为环境变量导致的，答案就在配置文件里：</p>
+<figure class="highlight plaintext"><figcaption><span>cat</span><a href="/etc/crontab">link</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">SHELL=/bin/bash</span><br><span class="line">PATH=/sbin:/bin:/usr/sbin:/usr/bin</span><br><span class="line">MAILTO=root</span><br><span class="line">HOME=/</span><br><span class="line"></span><br><span class="line"># For details see man 4 crontabs</span><br><span class="line"></span><br><span class="line"># Example of job definition:</span><br><span class="line"># .---------------- minute (0 - 59)</span><br><span class="line"># |  .------------- hour (0 - 23)</span><br><span class="line"># |  |  .---------- day of month (1 - 31)</span><br><span class="line"># |  |  |  .------- month (1 - 12) OR jan, ...</span><br><span class="line"># |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun, ...</span><br><span class="line"># |  |  |  |  |</span><br><span class="line"># *  *  *  *  * user-name command to be executed</span><br></pre></td></tr></table></figure>
+
+<p>比如说，你的 PHP 命令位于 /usr/loca/bin 目录，而你在 profile 里已经把这个目录加到了环境变量 PATH 里，不过 crontab 里可没有 /usr/loca/bin 目录，于是就出问题了。对付此类问题的方法很简单，那就是设置 CRON 的时候尽可能使用完整的全路径。</p>
+<p>此外，有人喜欢直接在 /etc/crontab 里配置定时任务，这同样是十恶不赦的做法，多数时候，我们都应该使用 crontab -e 的方法来设置，原因是这样有语法检查。</p>
+<p>如果本文的内容仅限于此类小菜，那么未免有些太对不起各位看官，下面上一道硬菜：设置一个 PHP 脚本，每分钟执行一次，怎么搞？听起来这分明就是一道送分题啊：</p>
+<p>```* * * * * /path/to/php /path/to/file`<br>让我们设想如下情况：假如上一分钟的 A 请求还没退出，下一分钟的 B 请求也启动了，就会导致出现 AB 同时请求的情况，如何避免？答案是 flock，它实现了锁机制：</p>
+<p> <code>flock -xn /tmp/lock /path/to/php /path/to/file</code><br>让我们再来重放一下故障场景：假如上一分钟的 A 请求还没退出，下一分钟的 B 请求也启动了，那么 B 请求会发现 A 请求还没有释放锁，于是它不会执行。</p>
+<p>看起来似乎完美解决了问题，不过让我们在加入一点特殊情况：假如因为某些无法预知的原因，导致脚本不能正常结束请求，进而导致不能正常释放锁，那么后续所有其它的 CD 等请求也都无法执行了，如何避免？答案是 timeout，它实现了超时控制机制：</p>
+<p> <code>timeout -s SIGINT 100 flock -xn /tmp/lock /path/to/php /path/to/file</code><br>让我们再来重放一下故障场景：假如上一分钟的 A 请求还没退出，下一分钟的 B 请求也启动了，那么 B 请求会发现 A 的请求还没有释放锁，于是它不会执行，不过下下分钟的 C 请求肯定能执行，因为在这之前，A 请求已经因为超时被 timeout 干掉了。</p>
+<p>当然，无论是锁机制，还是超时控制禁止，我们都可以自己实现，不过既然系统已经提供了这样的功能，那么除非你对自己的编码能力有自信，否则还是使用系统的吧。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://whosphp.github.io/2017/03/22/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E8%AE%BE%E7%BD%AECRON%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/" data-id="ckx8ovc9g0006lmjx77l05cte" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/03/23/PHP%E5%A4%9A%E8%BF%9B%E7%A8%8B/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          PHP多进程
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/03/22/%E5%AE%9A%E5%88%B6%E5%8C%96GridView/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">定制化GridView</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/16/Frp%E4%B9%8B%E5%90%8E%E7%9A%84%E7%BE%A4%E6%99%96%E8%8E%B7%E5%8F%96%E7%9C%9F%E5%AE%9E%E6%9D%A5%E8%AE%BFip/">Frp之后的群晖获取真实来访ip</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/16/Imap%E6%89%A9%E5%B1%95%E5%AF%BC%E8%87%B4php%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%89%B9%E5%88%AB%E6%85%A2/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/03/27/Terminal-Tools/">Terminal Tools</a>
+          </li>
+        
+          <li>
+            <a href="/2019/03/27/Mac-Tools/">Mac Tools</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/23/PHP%E5%A4%9A%E8%BF%9B%E7%A8%8B/">PHP多进程</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Who<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

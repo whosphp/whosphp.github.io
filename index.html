@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>WhosPHP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="WhosPHP">
+<meta property="og:url" content="https://whosphp.github.io/index.html">
+<meta property="og:site_name" content="WhosPHP">
+<meta property="og:locale">
+<meta property="article:author" content="Who">
+<meta property="article:tag" content="php,server">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="WhosPHP" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">WhosPHP</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://whosphp.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-Frp之后的群晖获取真实来访ip" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/12/16/Frp%E4%B9%8B%E5%90%8E%E7%9A%84%E7%BE%A4%E6%99%96%E8%8E%B7%E5%8F%96%E7%9C%9F%E5%AE%9E%E6%9D%A5%E8%AE%BFip/" class="article-date">
+  <time datetime="2021-12-16T06:53:54.000Z" itemprop="datePublished">2021-12-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/12/16/Frp%E4%B9%8B%E5%90%8E%E7%9A%84%E7%BE%A4%E6%99%96%E8%8E%B7%E5%8F%96%E7%9C%9F%E5%AE%9E%E6%9D%A5%E8%AE%BFip/">Frp之后的群晖获取真实来访ip</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="群晖环境"><a href="#群晖环境" class="headerlink" title="群晖环境"></a>群晖环境</h2><ul>
+<li>机型 DS3617xs</li>
+<li>版本 6.1.7</li>
+<li>开启 docker (镜像：nginx, stilleshan/frpc)</li>
+<li>开启 ssh</li>
+</ul>
+<h3 id="1-修改群晖-nginx-配置"><a href="#1-修改群晖-nginx-配置" class="headerlink" title="1. 修改群晖 nginx 配置"></a>1. 修改群晖 nginx 配置</h3><p>备份 DSM.mustache</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp /usr/syno/share/nginx/DSM.mustache&#123;,.bak&#125;</span><br></pre></td></tr></table></figure>
+<p>在第一个 server 块加入以下代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set_real_ip_from 172.17.0.0/16;</span><br><span class="line">real_ip_header X-Real-IP;</span><br></pre></td></tr></table></figure>
+<p>重启 nginx</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">synoservice --restart nginx</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-搭建-nginx-反代群晖"><a href="#2-搭建-nginx-反代群晖" class="headerlink" title="2. 搭建 nginx 反代群晖"></a>2. 搭建 nginx 反代群晖</h3><h4 id="2-1-在-File-Station-中-docker-目录下新建-nginx-文件夹-然后创建-default-conf"><a href="#2-1-在-File-Station-中-docker-目录下新建-nginx-文件夹-然后创建-default-conf" class="headerlink" title="2.1 在 File Station 中 docker 目录下新建 nginx 文件夹, 然后创建 default.conf"></a>2.1 在 <code>File Station</code> 中 <code>docker</code> 目录下新建 <code>nginx</code> 文件夹, 然后创建 <code>default.conf</code></h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen 443 ssl proxy_protocol;</span><br><span class="line"></span><br><span class="line">    real_ip_header proxy_protocol;</span><br><span class="line">    real_ip_recursive on;</span><br><span class="line">    set_real_ip_from 172.17.0.0/16;</span><br><span class="line">   </span><br><span class="line">    ssl_certificate /etc/nginx/conf.d/cert;</span><br><span class="line">    ssl_certificate_key /etc/nginx/conf.d/key;</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">		proxy_set_header X-Real-IP       $proxy_protocol_addr;</span><br><span class="line">    	proxy_set_header X-Forwarded-For $proxy_protocol_addr;</span><br><span class="line">        proxy_pass http://172.17.0.1:5000;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后将 ssl 证书也导入 nginx 文件夹，并改名为 <code>cert</code> 和 <code>key</code></p>
+<h4 id="2-2-创建-nginx-容器"><a href="#2-2-创建-nginx-容器" class="headerlink" title="2.2 创建 nginx 容器"></a>2.2 创建 nginx 容器</h4><p>创建时选择 <code>高级设置 &gt; 存储空间 &gt; 添加文件夹</code> ，选择 <code>docker/nginx</code> 文件夹，<code>装载路径</code> 设置为 <code>/etc/nginx/conf.d</code> ， 然后正常创建即可</p>
+<h3 id="3-创建-frpc-客户端"><a href="#3-创建-frpc-客户端" class="headerlink" title="3. 创建 frpc 客户端"></a>3. 创建 frpc 客户端</h3><h4 id="3-1-在-File-Station-中-docker-目录下新建-frpc-文件夹-然后创建-frpc-ini"><a href="#3-1-在-File-Station-中-docker-目录下新建-frpc-文件夹-然后创建-frpc-ini" class="headerlink" title="3.1 在 File Station 中 docker 目录下新建 frpc 文件夹, 然后创建 frpc.ini"></a>3.1 在 <code>File Station</code> 中 docker 目录下新建 <code>frpc</code> 文件夹, 然后创建 <code>frpc.ini</code></h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[common]</span><br><span class="line">// 你的 frp 服务器配置</span><br><span class="line"></span><br><span class="line">[dsm]</span><br><span class="line">type = tcp</span><br><span class="line">local_port = 443</span><br><span class="line">local_ip = 172.17.0.2 // 上面创建的 nginx 的 docker 内网 ip</span><br><span class="line">remote_port = 33333 // 看自己喜好选择端口即可</span><br><span class="line">proxy_protocol_version = v2</span><br></pre></td></tr></table></figure>
+<h4 id="3-2-创建-frpc-容器"><a href="#3-2-创建-frpc-容器" class="headerlink" title="3.2 创建 frpc 容器"></a>3.2 创建 frpc 容器</h4><p>创建时选择 <code>高级设置 &gt; 存储空间 &gt; 添加文件</code>，选择 <code>docker/frpc/frpc.in</code>i 文件，<code>装载路径</code>设置为 <code>/frp/frpc.ini</code> ，然后正常创建即可</p>
+<h3 id="4-访问-https-你的frp服务器地址-33333-如能正常访问，应该就说明配置好了"><a href="#4-访问-https-你的frp服务器地址-33333-如能正常访问，应该就说明配置好了" class="headerlink" title="4. 访问 https://你的frp服务器地址:33333 如能正常访问，应该就说明配置好了"></a>4. 访问 https://你的frp服务器地址:33333 如能正常访问，应该就说明配置好了</h3>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://whosphp.github.io/2021/12/16/Frp%E4%B9%8B%E5%90%8E%E7%9A%84%E7%BE%A4%E6%99%96%E8%8E%B7%E5%8F%96%E7%9C%9F%E5%AE%9E%E6%9D%A5%E8%AE%BFip/" data-id="ckx8ovc920000lmjx9yc73e1l" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Imap扩展导致php命令执行特别慢" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/12/16/Imap%E6%89%A9%E5%B1%95%E5%AF%BC%E8%87%B4php%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%89%B9%E5%88%AB%E6%85%A2/" class="article-date">
+  <time datetime="2021-12-16T06:34:39.531Z" itemprop="datePublished">2021-12-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这个问题是由php的imap扩展解析hostname引起的网络问题。</p>
+<p>有两种解决办法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 1. 关闭imap扩展（不建议）</span><br><span class="line">// 2. 修改hosts文件，使imap能正确的将hostname识别为127.0.0.1</span><br><span class="line">// 2.1 获取hostname</span><br><span class="line">hostname</span><br><span class="line">// 2.2 将上一条命令得到的hostname写入hosts文件</span><br><span class="line"> 127.0.0.1  localhost your-hostname</span><br><span class="line"> ::1        localhost your-hostname</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://whosphp.github.io/2021/12/16/Imap%E6%89%A9%E5%B1%95%E5%AF%BC%E8%87%B4php%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%89%B9%E5%88%AB%E6%85%A2/" data-id="ckx8ovc980001lmjxfrxb0n33" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Terminal-Tools" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/03/27/Terminal-Tools/" class="article-date">
+  <time datetime="2019-03-27T01:33:40.000Z" itemprop="datePublished">2019-03-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/03/27/Terminal-Tools/">Terminal Tools</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>autojump</li>
+<li>autosub</li>
+<li>axel</li>
+<li>brew</li>
+<li>ccat</li>
+<li>ffsend</li>
+<li>Gogs</li>
+<li>hexo</li>
+<li>htop</li>
+<li>iTerm</li>
+<li>mycli</li>
+<li>music-dl</li>
+<li>ncdu</li>
+<li>noti</li>
+<li>oh-my-zsh</li>
+<li>pgcli</li>
+<li>prettyping</li>
+<li>quick-look-plugins</li>
+<li>sshpass</li>
+<li>terminalizer</li>
+<li>terminal-notifier</li>
+<li>tldr</li>
+<li>trans</li>
+<li>wrk</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://whosphp.github.io/2019/03/27/Terminal-Tools/" data-id="ckx8ovc9d0004lmjx030nhqet" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Mac-Tools" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/03/27/Mac-Tools/" class="article-date">
+  <time datetime="2019-03-27T01:32:43.000Z" itemprop="datePublished">2019-03-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/03/27/Mac-Tools/">Mac Tools</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>Alfred</li>
+<li>Bartender</li>
+<li>BetterZip</li>
+<li>Betwixt</li>
+<li>Caffeine</li>
+<li>CheatSheet</li>
+<li>Chrome</li>
+<li>ClashX Pro</li>
+<li>DataGrip</li>
+<li>Expressions</li>
+<li>Google Chrome</li>
+<li>IntelliJ IDEA</li>
+<li>iRamDisk</li>
+<li>Stats(free) / iStat Menus</li>
+<li>iTerm</li>
+<li>Macs Fan Control</li>
+<li>Moom</li>
+<li>Motrix</li>
+<li>Navicat Premium</li>
+<li>NeteaseMusic</li>
+<li>Numi</li>
+<li>PhpStorm</li>
+<li>Postman</li>
+<li>Proxifier</li>
+<li>PyCharm</li>
+<li>ShadowsocksX-NG</li>
+<li>SimplyRAR</li>
+<li>Snap</li>
+<li>Sourcetree</li>
+<li>Syncthing</li>
+<li>stretchly</li>
+<li>The Unarchiver</li>
+<li>Transmit</li>
+<li>Typora</li>
+<li>VMware Fusion</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://whosphp.github.io/2019/03/27/Mac-Tools/" data-id="ckx8ovc9b0002lmjx9h6uatfr" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-PHP多进程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/23/PHP%E5%A4%9A%E8%BF%9B%E7%A8%8B/" class="article-date">
+  <time datetime="2017-03-23T02:53:16.000Z" itemprop="datePublished">2017-03-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/23/PHP%E5%A4%9A%E8%BF%9B%E7%A8%8B/">PHP多进程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 转化为守护进程</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">daemonize</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="variable">$pid</span> = pcntl_fork();</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable">$pid</span> == -<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;fork(1) failed!\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">elseif</span> (<span class="variable">$pid</span> &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//让由用户启动的进程退出</span></span><br><span class="line">        <span class="keyword">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">​</span><br><span class="line">    <span class="comment">//建立一个有别于终端的新session以脱离终端</span></span><br><span class="line">    posix_setsid();</span><br><span class="line">​</span><br><span class="line">    <span class="variable">$pid</span> = pcntl_fork();</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable">$pid</span> == -<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;fork(2) failed!\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">elseif</span> (<span class="variable">$pid</span> &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//父进程退出, 剩下子进程成为最终的独立进程</span></span><br><span class="line">        <span class="keyword">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">​</span><br><span class="line">daemonize();</span><br><span class="line">​</span><br><span class="line"><span class="comment">// 设定子进程数量</span></span><br><span class="line"><span class="variable">$worker_num</span> = <span class="number">10</span>;</span><br><span class="line">​</span><br><span class="line"><span class="comment">// 设定接收到信号时操作</span></span><br><span class="line">pcntl_signal(SIGINT, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">exit</span>();</span><br><span class="line">&#125;);</span><br><span class="line">​</span><br><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">  <span class="variable">$pid</span> = pcntl_fork();</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//父进程和子进程都会执行下面代码</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="variable">$pid</span> == -<span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="string">&quot;fork error&quot;</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable">$pid</span>) &#123;</span><br><span class="line">    <span class="comment">// 在父进程执行</span></span><br><span class="line">    <span class="built_in">static</span> <span class="variable">$execute</span> = <span class="number">0</span>;</span><br><span class="line">    <span class="variable">$execute</span>++;</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$execute</span> &gt;= <span class="variable">$worker_num</span>) &#123;</span><br><span class="line">      pcntl_wait(<span class="variable">$status</span>);</span><br><span class="line">      <span class="variable">$execute</span>--;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 在子进程执行</span></span><br><span class="line">    <span class="comment">// 业务逻辑放在这</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">exit</span>();</span><br><span class="line">  &#125;</span><br><span class="line">​</span><br><span class="line">  <span class="comment">// 信号处理函数在此执行</span></span><br><span class="line">  pcntl_signal_dispatch();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://whosphp.github.io/2017/03/23/PHP%E5%A4%9A%E8%BF%9B%E7%A8%8B/" data-id="ckx8ovc9c0003lmjxfl188yg8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-如何正确设置CRON定时任务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/22/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E8%AE%BE%E7%BD%AECRON%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/" class="article-date">
+  <time datetime="2017-03-22T02:49:30.000Z" itemprop="datePublished">2017-03-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/22/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E8%AE%BE%E7%BD%AECRON%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/">如何正确设置CRON定时任务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>转载自<a target="_blank" rel="noopener" href="http://huoding.com/">火丁笔记</a>，原文链接<a target="_blank" rel="noopener" href="http://huoding.com/2016/12/12/573">http://huoding.com/2016/12/12/573</a></p>
+<p>相信很多人看了标题后都会纳闷：设置 CRON 定时任务有什么难的？不过请相信我，正确设置 CRON 真的不是一件简单的事情！各位看官不妨听我慢慢道来。</p>
+<p>关于 CRON，出镜率最高的一个问题莫过于：为什么手动执行一切正常，放到 CRON 里就不执行呢？实际上此类问题多半是因为环境变量导致的，答案就在配置文件里：</p>
+<figure class="highlight plaintext"><figcaption><span>cat</span><a href="/etc/crontab">link</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">SHELL=/bin/bash</span><br><span class="line">PATH=/sbin:/bin:/usr/sbin:/usr/bin</span><br><span class="line">MAILTO=root</span><br><span class="line">HOME=/</span><br><span class="line"></span><br><span class="line"># For details see man 4 crontabs</span><br><span class="line"></span><br><span class="line"># Example of job definition:</span><br><span class="line"># .---------------- minute (0 - 59)</span><br><span class="line"># |  .------------- hour (0 - 23)</span><br><span class="line"># |  |  .---------- day of month (1 - 31)</span><br><span class="line"># |  |  |  .------- month (1 - 12) OR jan, ...</span><br><span class="line"># |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun, ...</span><br><span class="line"># |  |  |  |  |</span><br><span class="line"># *  *  *  *  * user-name command to be executed</span><br></pre></td></tr></table></figure>
+
+<p>比如说，你的 PHP 命令位于 /usr/loca/bin 目录，而你在 profile 里已经把这个目录加到了环境变量 PATH 里，不过 crontab 里可没有 /usr/loca/bin 目录，于是就出问题了。对付此类问题的方法很简单，那就是设置 CRON 的时候尽可能使用完整的全路径。</p>
+<p>此外，有人喜欢直接在 /etc/crontab 里配置定时任务，这同样是十恶不赦的做法，多数时候，我们都应该使用 crontab -e 的方法来设置，原因是这样有语法检查。</p>
+<p>如果本文的内容仅限于此类小菜，那么未免有些太对不起各位看官，下面上一道硬菜：设置一个 PHP 脚本，每分钟执行一次，怎么搞？听起来这分明就是一道送分题啊：</p>
+<p>```* * * * * /path/to/php /path/to/file`<br>让我们设想如下情况：假如上一分钟的 A 请求还没退出，下一分钟的 B 请求也启动了，就会导致出现 AB 同时请求的情况，如何避免？答案是 flock，它实现了锁机制：</p>
+<p> <code>flock -xn /tmp/lock /path/to/php /path/to/file</code><br>让我们再来重放一下故障场景：假如上一分钟的 A 请求还没退出，下一分钟的 B 请求也启动了，那么 B 请求会发现 A 请求还没有释放锁，于是它不会执行。</p>
+<p>看起来似乎完美解决了问题，不过让我们在加入一点特殊情况：假如因为某些无法预知的原因，导致脚本不能正常结束请求，进而导致不能正常释放锁，那么后续所有其它的 CD 等请求也都无法执行了，如何避免？答案是 timeout，它实现了超时控制机制：</p>
+<p> <code>timeout -s SIGINT 100 flock -xn /tmp/lock /path/to/php /path/to/file</code><br>让我们再来重放一下故障场景：假如上一分钟的 A 请求还没退出，下一分钟的 B 请求也启动了，那么 B 请求会发现 A 的请求还没有释放锁，于是它不会执行，不过下下分钟的 C 请求肯定能执行，因为在这之前，A 请求已经因为超时被 timeout 干掉了。</p>
+<p>当然，无论是锁机制，还是超时控制禁止，我们都可以自己实现，不过既然系统已经提供了这样的功能，那么除非你对自己的编码能力有自信，否则还是使用系统的吧。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://whosphp.github.io/2017/03/22/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E8%AE%BE%E7%BD%AECRON%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/" data-id="ckx8ovc9g0006lmjx77l05cte" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-定制化GridView" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/22/%E5%AE%9A%E5%88%B6%E5%8C%96GridView/" class="article-date">
+  <time datetime="2017-03-22T02:47:02.000Z" itemprop="datePublished">2017-03-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/22/%E5%AE%9A%E5%88%B6%E5%8C%96GridView/">定制化GridView</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">GridView::widget([</span><br><span class="line">  <span class="string">&#x27;dataProvider&#x27;</span> =&gt; <span class="variable">$dataProvider</span>,</span><br><span class="line">  <span class="string">&#x27;columns&#x27;</span> =&gt; [</span><br><span class="line">    [<span class="string">&#x27;class&#x27;</span> =&gt; <span class="string">&#x27;yii\grid\SerialColumn&#x27;</span>],</span><br><span class="line"></span><br><span class="line">    [</span><br><span class="line">      <span class="string">&#x27;label&#x27;</span> =&gt; <span class="string">&#x27;标题1&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;value&#x27;</span> =&gt; <span class="function"><span class="keyword">function</span> (<span class="params"><span class="variable">$model</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$model</span>-&gt;name;</span><br><span class="line">      &#125;</span><br><span class="line">    ],</span><br><span class="line"></span><br><span class="line">    [</span><br><span class="line">      <span class="string">&#x27;class&#x27;</span> =&gt; <span class="string">&#x27;yii\grid\ActionColumn&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;header&#x27;</span> =&gt; <span class="string">&#x27;标题2&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;template&#x27;</span> =&gt; <span class="string">&#x27;&#123;add-child&#125; &#123;update&#125; &#123;delete&#125;&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;buttons&#x27;</span>=&gt;[</span><br><span class="line">        <span class="string">&#x27;add-child&#x27;</span> =&gt; <span class="function"><span class="keyword">function</span>(<span class="params"><span class="variable">$url</span>, <span class="variable">$model</span>, <span class="variable">$key</span></span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> Html::a(<span class="string">&#x27;添加商品&#x27;</span>, <span class="string">&#x27;#&#x27;</span>, [</span><br><span class="line">            <span class="string">&#x27;class&#x27;</span> =&gt; <span class="string">&#x27;layerAddChild&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;data-content-id&#x27;</span> =&gt; <span class="variable">$key</span></span><br><span class="line">          ]);</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">&#x27;update&#x27;</span> =&gt; <span class="function"><span class="keyword">function</span>(<span class="params"><span class="variable">$url</span>, <span class="variable">$model</span>, <span class="variable">$key</span></span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> Html::a(<span class="string">&#x27;编辑商品&#x27;</span>, <span class="string">&#x27;#&#x27;</span>, [</span><br><span class="line">            <span class="string">&#x27;class&#x27;</span> =&gt; <span class="string">&#x27;layerUpdateBrand&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;data-content-id&#x27;</span> =&gt; <span class="variable">$key</span></span><br><span class="line">          ]);</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">&#x27;delete&#x27;</span> =&gt; <span class="function"><span class="keyword">function</span>(<span class="params"><span class="variable">$url</span>, <span class="variable">$model</span>, <span class="variable">$key</span></span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> Html::a(<span class="string">&#x27;删除商品&#x27;</span>, <span class="string">&#x27;#&#x27;</span>, [</span><br><span class="line">            <span class="string">&#x27;class&#x27;</span> =&gt; <span class="string">&#x27;layerDeleteBrand&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;data-content-id&#x27;</span> =&gt; <span class="variable">$key</span></span><br><span class="line">          ]);</span><br><span class="line">        &#125;,</span><br><span class="line">      ],</span><br><span class="line">    ],</span><br><span class="line">  ],</span><br><span class="line">]);</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://whosphp.github.io/2017/03/22/%E5%AE%9A%E5%88%B6%E5%8C%96GridView/" data-id="ckx8ovc9h0007lmjx4hhxhthl" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-git-clone-401-error" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/22/git-clone-401-error/" class="article-date">
+  <time datetime="2017-03-22T02:40:02.000Z" itemprop="datePublished">2017-03-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/22/git-clone-401-error/">git clone 401 error</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>环境：CentOS 6.5<br>Git版本：1.7<br>问题：使用git clone时遇到了401错误<br>解决办法：目前找到的解决办法是升级git版本，从github中拉取最新版git源码，编译安装即可。<br>git编译安装参考：<a target="_blank" rel="noopener" href="https://my.oschina.net/antsky/blog/514586">https://my.oschina.net/antsky/blog/514586</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://whosphp.github.io/2017/03/22/git-clone-401-error/" data-id="ckx8ovc9e0005lmjx9hjjevi0" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/16/Frp%E4%B9%8B%E5%90%8E%E7%9A%84%E7%BE%A4%E6%99%96%E8%8E%B7%E5%8F%96%E7%9C%9F%E5%AE%9E%E6%9D%A5%E8%AE%BFip/">Frp之后的群晖获取真实来访ip</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/16/Imap%E6%89%A9%E5%B1%95%E5%AF%BC%E8%87%B4php%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%89%B9%E5%88%AB%E6%85%A2/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/03/27/Terminal-Tools/">Terminal Tools</a>
+          </li>
+        
+          <li>
+            <a href="/2019/03/27/Mac-Tools/">Mac Tools</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/23/PHP%E5%A4%9A%E8%BF%9B%E7%A8%8B/">PHP多进程</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Who<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
