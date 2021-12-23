@@ -65,6 +65,52 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-虚拟机安装群晖" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/12/22/%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85%E7%BE%A4%E6%99%96/" class="article-date">
+  <time datetime="2021-12-22T02:09:44.000Z" itemprop="datePublished">2021-12-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/12/22/%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85%E7%BE%A4%E6%99%96/">虚拟机安装群晖</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="虚拟机版本-VMware-Workstation-16"><a href="#虚拟机版本-VMware-Workstation-16" class="headerlink" title="虚拟机版本 VMware Workstation 16"></a>虚拟机版本 VMware Workstation 16</h2><ol>
+<li>兼容性选择 15.x</li>
+<li>Linux - 其他 Linux 4.x 内核 64 位</li>
+<li>添加启动盘时选为 SATA</li>
+<li>若启动后搜不到 ip, 可以尝试手动编辑虚拟机 vmx 配置文件，修改网卡为 e1000e</li>
+</ol>
+<h3 id="DSM-6-17-成功"><a href="#DSM-6-17-成功" class="headerlink" title="DSM 6.17 成功"></a>DSM 6.17 成功</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">参考：https://www.openos.org/threads/dsm-6-2-3-2020-12-27.29/ </span><br><span class="line">引导：1.02b</span><br><span class="line">机型：DS3617+</span><br><span class="line">引导方式 传统BIOS</span><br></pre></td></tr></table></figure>
+
+<h3 id="DSM-6-23-成功"><a href="#DSM-6-23-成功" class="headerlink" title="DSM 6.23 成功"></a>DSM 6.23 成功</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">参考：https://www.openos.org/threads/dsm-6-2-3-2020-12-27.29/</span><br><span class="line">引导： v1.04b</span><br><span class="line">机型： DS3617+</span><br><span class="line">引导方式： 传统BIOS</span><br><span class="line">特殊处理：添加数据盘为 SATA 安装时提示找不到硬盘，切换成 SCSI 数据盘时可以正常安装 </span><br></pre></td></tr></table></figure>
+
+<h3 id="DSM-7-0-1-成功"><a href="#DSM-7-0-1-成功" class="headerlink" title="DSM 7.0.1 成功"></a>DSM 7.0.1 成功</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">参考：https://www.openos.org/threads/dsm-7-0-redpill-108.3536/</span><br><span class="line">引导：211126 redpill-DS3615xs_7.0.1-42218_26.zip</span><br><span class="line">机型 DS3615</span><br><span class="line">引导方式 传统BIOS</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://whosphp.github.io/2021/12/22/%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85%E7%BE%A4%E6%99%96/" data-id="ckxib4zor0008mkjxhp0w7ayf" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Frp之后的群晖获取真实来访ip" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2021/12/16/Frp%E4%B9%8B%E5%90%8E%E7%9A%84%E7%BE%A4%E6%99%96%E8%8E%B7%E5%8F%96%E7%9C%9F%E5%AE%9E%E6%9D%A5%E8%AE%BFip/" class="article-date">
@@ -109,7 +155,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://whosphp.github.io/2021/12/16/Frp%E4%B9%8B%E5%90%8E%E7%9A%84%E7%BE%A4%E6%99%96%E8%8E%B7%E5%8F%96%E7%9C%9F%E5%AE%9E%E6%9D%A5%E8%AE%BFip/" data-id="ckx8ovc920000lmjx9yc73e1l" class="article-share-link">Share</a>
+      <a data-url="https://whosphp.github.io/2021/12/16/Frp%E4%B9%8B%E5%90%8E%E7%9A%84%E7%BE%A4%E6%99%96%E8%8E%B7%E5%8F%96%E7%9C%9F%E5%AE%9E%E6%9D%A5%E8%AE%BFip/" data-id="ckxib4zo80000mkjxh92m4n8u" class="article-share-link">Share</a>
       
       
     </footer>
@@ -139,7 +185,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://whosphp.github.io/2021/12/16/Imap%E6%89%A9%E5%B1%95%E5%AF%BC%E8%87%B4php%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%89%B9%E5%88%AB%E6%85%A2/" data-id="ckx8ovc980001lmjxfrxb0n33" class="article-share-link">Share</a>
+      <a data-url="https://whosphp.github.io/2021/12/16/Imap%E6%89%A9%E5%B1%95%E5%AF%BC%E8%87%B4php%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%89%B9%E5%88%AB%E6%85%A2/" data-id="ckxib4zof0001mkjxafe5cb0b" class="article-share-link">Share</a>
       
       
     </footer>
@@ -201,7 +247,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://whosphp.github.io/2019/03/27/Terminal-Tools/" data-id="ckx8ovc9d0004lmjx030nhqet" class="article-share-link">Share</a>
+      <a data-url="https://whosphp.github.io/2019/03/27/Terminal-Tools/" data-id="ckxib4zol0004mkjx3ttvcd46" class="article-share-link">Share</a>
       
       
     </footer>
@@ -274,7 +320,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://whosphp.github.io/2019/03/27/Mac-Tools/" data-id="ckx8ovc9b0002lmjx9h6uatfr" class="article-share-link">Share</a>
+      <a data-url="https://whosphp.github.io/2019/03/27/Mac-Tools/" data-id="ckxib4zoi0002mkjx72yme361" class="article-share-link">Share</a>
       
       
     </footer>
@@ -312,7 +358,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://whosphp.github.io/2017/03/23/PHP%E5%A4%9A%E8%BF%9B%E7%A8%8B/" data-id="ckx8ovc9c0003lmjxfl188yg8" class="article-share-link">Share</a>
+      <a data-url="https://whosphp.github.io/2017/03/23/PHP%E5%A4%9A%E8%BF%9B%E7%A8%8B/" data-id="ckxib4zok0003mkjx46hf9xh7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -361,7 +407,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://whosphp.github.io/2017/03/22/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E8%AE%BE%E7%BD%AECRON%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/" data-id="ckx8ovc9g0006lmjx77l05cte" class="article-share-link">Share</a>
+      <a data-url="https://whosphp.github.io/2017/03/22/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E8%AE%BE%E7%BD%AECRON%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/" data-id="ckxib4zoo0006mkjxdalke12k" class="article-share-link">Share</a>
       
       
     </footer>
@@ -399,7 +445,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://whosphp.github.io/2017/03/22/%E5%AE%9A%E5%88%B6%E5%8C%96GridView/" data-id="ckx8ovc9h0007lmjx4hhxhthl" class="article-share-link">Share</a>
+      <a data-url="https://whosphp.github.io/2017/03/22/%E5%AE%9A%E5%88%B6%E5%8C%96GridView/" data-id="ckxib4zop0007mkjxbdwo92c7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -436,7 +482,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://whosphp.github.io/2017/03/22/git-clone-401-error/" data-id="ckx8ovc9e0005lmjx9hjjevi0" class="article-share-link">Share</a>
+      <a data-url="https://whosphp.github.io/2017/03/22/git-clone-401-error/" data-id="ckxib4zom0005mkjx0b64egjw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -477,6 +523,10 @@
       <ul>
         
           <li>
+            <a href="/2021/12/22/%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85%E7%BE%A4%E6%99%96/">虚拟机安装群晖</a>
+          </li>
+        
+          <li>
             <a href="/2021/12/16/Frp%E4%B9%8B%E5%90%8E%E7%9A%84%E7%BE%A4%E6%99%96%E8%8E%B7%E5%8F%96%E7%9C%9F%E5%AE%9E%E6%9D%A5%E8%AE%BFip/">Frp之后的群晖获取真实来访ip</a>
           </li>
         
@@ -490,10 +540,6 @@
         
           <li>
             <a href="/2019/03/27/Mac-Tools/">Mac Tools</a>
-          </li>
-        
-          <li>
-            <a href="/2017/03/23/PHP%E5%A4%9A%E8%BF%9B%E7%A8%8B/">PHP多进程</a>
           </li>
         
       </ul>
